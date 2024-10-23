@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { ThumbsDown, ArrowLeft, History, Clock, Check, X } from 'lucide-react';
 
-// Define types
+// Types
 interface Feedback {
   id: number;
   text: string;
@@ -25,22 +25,20 @@ interface Dimension {
   feedbacks: Feedback[];
 }
 
-// Define props interfaces for sub-components
+type ViewType = 'list' | 'feedbackList' | 'detail' | 'history';
+
 interface SubComponentProps {
   dimensions: Dimension[];
   selectedDimension: Dimension | null;
   selectedFeedback: Feedback | null;
-  setView: (view: 'list' | 'feedbackList' | 'detail') => void;
+  setView: (view: ViewType) => void;
   setSelectedDimension: (dimension: Dimension | null) => void;
   setSelectedFeedback: (feedback: Feedback | null) => void;
   handleFeedbackAction: (dimensionId: number, feedbackId: number, action: string) => void;
 }
 
-const DimensionsList: React.FC<SubComponentProps> = ({ 
-  dimensions, 
-  setView, 
-  setSelectedDimension 
-}) => (
+// Components
+const DimensionsList: React.FC<SubComponentProps> = ({ dimensions, setView, setSelectedDimension }) => (
   <Card className="w-full">
     <CardHeader>
       <CardTitle className="flex justify-between items-center">
@@ -259,8 +257,53 @@ const DetailView: React.FC<SubComponentProps> = ({
   </Card>
 );
 
+const HistoryView: React.FC<SubComponentProps> = ({ setView }) => (
+  <Card className="w-full">
+    <CardHeader>
+      <div className="flex items-center justify-between mb-4">
+        <Button 
+          variant="ghost" 
+          className="w-fit"
+          onClick={() => setView('list')}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to list
+        </Button>
+      </div>
+      <CardTitle>Feedback History</CardTitle>
+      <CardDescription>Past feedback decisions</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div className="w-full overflow-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left p-4 font-medium">Date</th>
+              <th className="text-left p-4 font-medium">Dimension</th>
+              <th className="text-left p-4 font-medium">Feedback</th>
+              <th className="text-left p-4 font-medium">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b hover:bg-slate-50">
+              <td className="p-4">2024-10-22</td>
+              <td className="p-4">Empathy</td>
+              <td className="p-4">Agent spoke in monotone voice</td>
+              <td className="p-4">
+                <span className="px-2 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                  Accepted
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </CardContent>
+  </Card>
+);
+
 const AIStudio = () => {
-  const [view, setView] = useState<'list' | 'feedbackList' | 'detail'>('list');
+  const [view, setView] = useState<ViewType>('list');
   const [selectedDimension, setSelectedDimension] = useState<Dimension | null>(null);
   const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
 
@@ -363,6 +406,7 @@ Agent: You can try contacting your bank about the overdraft fees. Was there anyt
       {view === 'list' && <DimensionsList {...componentProps} />}
       {view === 'feedbackList' && selectedDimension && <FeedbackList {...componentProps} />}
       {view === 'detail' && selectedDimension && selectedFeedback && <DetailView {...componentProps} />}
+      {view === 'history' && <HistoryView {...componentProps} />}
     </div>
   );
 };
