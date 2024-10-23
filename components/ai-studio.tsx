@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -76,9 +78,7 @@ Agent: You can try contacting your bank about the overdraft fees. Was there anyt
     }
   ]);
 
-  // ... rest of the component remains the same ...
-
-  const handleFeedbackAction = (dimensionId, feedbackId, action) => {
+  const handleFeedbackAction = (dimensionId: number, feedbackId: number, action: string) => {
     setDimensions(dimensions.map(dim => {
       if (dim.id === dimensionId) {
         return {
