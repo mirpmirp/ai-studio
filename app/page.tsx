@@ -1,8 +1,8 @@
-import AIStudio from '@/components/ai-studio';
+import AIStudio from '@/components/ai-studio'
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen">
       <AIStudio />
     </main>
   )
